@@ -5,8 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <meta name="theme-color" content="#0e1013">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="从夯到拉">
 <meta name="description" content="从夯到拉 —— 中国城市旅游排行，把自己去过的城市拖进夯、顶级、人上人、NPC、拉完了五档">
 <title>从夯到拉 · 我的城市旅游排行</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -116,6 +122,14 @@
   document.getElementById('tabExportImg')?.addEventListener('click', () => {
     document.getElementById('btnExportImg')?.click();
   });
+
+  // 注册 Service Worker，让部署版离线可用 / 添加到主屏幕后像原生 App
+  // file:// 下 SW 不可用，静默跳过；GitHub Pages 走 https，正常注册
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
 </script>
 
 </body>

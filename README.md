@@ -2,24 +2,32 @@
 
 把自己去过的城市按网上的「从夯到拉」五档排名，地图按等级填色，一键导出竖版排行长图。
 
-**在线访问**：https://你的用户名.github.io/仓库名/
+**在线访问**：https://1banana1.github.io/hanglatravel/
 
 ## 这是什么
 
-一个纯静态的单文件 Web 应用，零依赖、零后端、离线可用。手机和电脑都能跑，数据存在浏览器本地。
+一个纯静态 Web 应用，零依赖、零后端、离线可用。手机和电脑都能跑，数据存在浏览器本地。
 
 五档从高到低：**夯 → 顶级 → 人上人 → NPC → 拉完了**（外加「未定级」待你手动定级）。
 
-## 怎么用
+## 三种打开方式
 
-### 方式一：直接用单文件（最简单）
+### 方式一：直接访问线上版（最省事）
 
-把 `从夯到拉.html` 发到手机上，用浏览器打开就能用。零安装、零服务器。
+打开 https://1banana1.github.io/hanglatravel/ 就能用。
 
-- iPhone 用 Safari 打开后可「添加到主屏幕」，用起来跟 App 一样
+手机上可以「添加到主屏幕」，之后点图标全屏打开，没有浏览器地址栏，跟原生 App 一样。已注册 Service Worker，断网也能开。
+
+### 方式二：单文件版（适合离线分发）
+
+下载 [`单文件版.html`](单文件版.html)（或仓库根目录的 `从夯到拉.html`，两者内容相同），发到手机上用浏览器打开。所有 JS/CSS/数据都内联在这一个文件里，**零安装、零服务器、不需要联网**。
+
 - 微信/QQ 传给自己 → 点开 → 选「用浏览器打开」
+- iPhone 用 Safari 打开后可「添加到主屏幕」
 
-### 方式二：本地起个服务
+> 单文件版的容量是部署版的约 5 倍（3 MB vs 0.6 MB 首屏），因为地图数据以 JSON 字面量内联，无法被 gzip 压缩。
+
+### 方式三：本地起服务（适合改代码）
 
 ```bash
 python -m http.server 8899
@@ -46,9 +54,12 @@ python -m http.server 8899
 ## 目录结构
 
 ```
-index.html                 入口（开发用，走 ES module）
-从夯到拉.html               单文件构建产物（可直接分发）
+index.html                 入口（走 ES module，Pages 的首页）
+单文件版.html               单文件构建产物（可直接分发，与 从夯到拉.html 同内容）
+manifest.json              PWA 清单（「添加到主屏幕」用）
+sw.js                      Service Worker（离线缓存）
 css/app.css                样式（桌面左右分栏 / 手机单栏 + 底部标签栏）
+icons/                     应用图标（SVG + 多尺寸 PNG，含 maskable）
 src/
   tiers.js                 五档定义与配色
   store.js                 localStorage 状态、导入导出、订阅
@@ -68,6 +79,7 @@ scripts/
   gen_city_geo.py          抓取地级市边界
   patch_geo.py             补直辖市/港澳/台湾
   map_cities_to_geo.py     城市 -> 边界映射
+  gen_icons.py             生成 PWA 图标 PNG
 docs/验收记录.md            验收断言与已修 Bug 根因
 ```
 
@@ -87,12 +99,25 @@ python scripts/build_single.py
 - **零依赖**：没有 CDN、没有 npm、没有构建步骤也能跑源码版
 - **地图是自己画的**：手写等距圆柱投影，SVG 分四层（`.layer-cities` / `.layer-city-areas` / `.layer-prov-borders` / `.layer-dots`），省界线独立成层叠在地级市之上，否则几百条市界混在一起看不出省份分界
 - **出图不依赖任何截图库**：单文件版不能联网，所以 `export-image.js` 用原生 Canvas 2D 直接画
+- **两种分发形态体积差异**：部署版首屏约 0.6 MB。地图数据是 JSON（gzip 能压掉约 75%），单文件版因为要内联成 JS 字面量无法被压缩，所以是 3 MB
+- **离线**：Service Worker 预缓存应用外壳与地图数据；导航走 network-first（保证能拿到更新），静态资源走 stale-while-revalidate（秒开）
 - **边界数据源**：[阿里云 DataV 行政区划](https://geo.datav.aliyun.com/areas_v3/bound/)（公开服务）
 
 ## 已知问题
 
 - 出图排版还有三处待修：档位计数角标压在档位名上、档位列宽不足导致「人上人」溢出、城市卡片未铺满整行
 - 台湾采用省级整体轮廓（DataV 未提供台湾下级边界数据）
+
+## 部署
+
+仓库是纯静态站点，GitHub Pages 开箱即用：
+
+1. 仓库 → **Settings** → **Pages**
+2. **Source** 选 `Deploy from a branch`
+3. **Branch** 选 `main`，目录选 `/ (root)`，Save
+4. 等约 1 分钟，访问 https://1banana1.github.io/hanglatravel/
+
+不需要任何构建步骤，也不需要 GitHub Actions——所有文件都是可直接托管的静态资源。
 
 ## 来源
 
