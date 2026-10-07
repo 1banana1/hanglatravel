@@ -1,0 +1,16 @@
+# 构建缓存 / 临时探针，不入库
+_cache/
+_probe/
+*.log
+
+# 调试用的临时脚本与报告（以 _ 开头）
+_*.js
+_*.json
+_*.txt
+_preview_tier.png
+
+# 打包产物（由 scripts/build_single.py 生成，仓库里保留源码即可）
+从夯到拉-完整项目.zip
+
+# 与本项目无关的文件（桌面带来的过磅单）
+*.jpg

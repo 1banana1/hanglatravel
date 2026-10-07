@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<meta name="theme-color" content="#0e1013">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="从夯到拉 —— 中国城市旅游排行，把自己去过的城市拖进夯、顶级、人上人、NPC、拉完了五档">
+<title>从夯到拉 · 我的城市旅游排行</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-main"><span class="hang">夯</span>→<span class="la">拉</span></span>
+    <span class="brand-sub">我的城市排行</span>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input
+      id="searchInput"
+      class="search-input"
+      type="search"
+      placeholder="搜城市：敦煌、婺源、重庆…"
+      autocomplete="off"
+      spellcheck="false"
+    >
+    <button id="searchClear" class="search-clear" title="清空">✕</button>
+    <div id="suggest" class="suggest"></div>
+  </div>
+
+  <div class="view-tabs">
+    <button class="view-tab active" data-switch="table">表格</button>
+    <button class="view-tab" data-switch="map">地图</button>
+  </div>
+
+  <div class="header-actions">
+    <button id="btnExport" class="icon-btn" title="导出 JSON 备份">
+      <span>⬇</span><span class="label">导出</span>
+    </button>
+    <button id="btnExportImg" class="icon-btn accent" title="导出排行长图（PNG）">
+      <span>🖼</span><span class="label">出图</span>
+    </button>
+    <button id="btnImport" class="icon-btn" title="导入 JSON 备份">
+      <span>⬆</span><span class="label">导入</span>
+    </button>
+    <button id="btnClear" class="icon-btn danger" title="清空全部">
+      <span>🗑</span><span class="label">清空</span>
+    </button>
+  </div>
+</header>
+
+<main class="app-main">
+
+  <!-- 表格视图 -->
+  <section class="view active" data-view="table">
+    <div class="table-view">
+      <div class="toolbar">
+        <span class="toolbar-label">筛选</span>
+        <select id="provinceSelect">
+          <option value="">全部省份</option>
+        </select>
+        <input id="tableQuery" type="text" placeholder="在城市/景点中搜索…">
+        <span class="toolbar-spacer"></span>
+        <button id="btnExpandAll" class="icon-btn" title="展开/收起全部档位">全部展开</button>
+      </div>
+      <div class="stats-bar" id="statsBar"></div>
+      <div class="level-filter" id="levelFilter"></div>
+      <div class="table-pane" id="tablePane"></div>
+    </div>
+  </section>
+
+  <!-- 地图视图 -->
+  <section class="view" data-view="map">
+    <div class="map-view">
+      <div class="map-pane" id="mapPane"></div>
+      <div class="map-toolbar">
+        <button class="map-btn" id="zoomIn" title="放大">＋</button>
+        <button class="map-btn" id="zoomOut" title="缩小">－</button>
+        <button class="map-btn" id="zoomReset" title="复位">⟲</button>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="map-hint" id="mapHint">在地图上拖动查看，滚轮或双指缩放</div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="tabbar">
+  <button class="active" data-switch="table">
+    <span class="ti">▤</span><span>表格</span>
+  </button>
+  <button data-switch="map">
+    <span class="ti">◉</span><span>地图</span>
+  </button>
+  <button id="tabExportImg">
+    <span class="ti">🖼</span><span>出图</span>
+  </button>
+  <button id="tabExport">
+    <span class="ti">⬇</span><span>备份</span>
+  </button>
+</nav>
+
+<input type="file" id="fileInput" accept=".json,application/json" hidden>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="src/app.js"></script>
+
+<script>
+  // 手机端底部标签栏的按钮复用顶栏逻辑
+  document.getElementById('tabExport')?.addEventListener('click', () => {
+    document.getElementById('btnExport')?.click();
+  });
+  document.getElementById('tabExportImg')?.addEventListener('click', () => {
+    document.getElementById('btnExportImg')?.click();
+  });
+</script>
+
+</body>
+</html>
